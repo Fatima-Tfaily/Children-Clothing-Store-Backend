@@ -61,7 +61,7 @@ const deleteCategory = async (req, res) => {
 
 const addCategory = async (req, res) => {
   try {
-    const { categoryId, categoryName, categoryImage } = req.body;
+    const { categoryName, categoryImage } = req.body;
 
     // Check if the category with the given categoryName already exists
     const existingCategory = await Category.find({ categoryName });
@@ -70,7 +70,6 @@ const addCategory = async (req, res) => {
     }
 
     const newCategory = new Category({
-      categoryId,
       categoryName,
       categoryImage,
     });

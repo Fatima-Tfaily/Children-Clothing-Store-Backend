@@ -1,3 +1,4 @@
+const { imageUploader } = require("../extra/imageUploader");
 const Product = require("../models/Products");
 
 const getAllProducts = async (req, res) => {
@@ -21,13 +22,33 @@ const getProductByCategoryId = async (req, res) => {
 
 const addProduct = async (req, res) => {
   try {
-    const savedProduct = await Product.create(req.body);
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "Image file is required",
+      });
+    }
 
+    const imageURL = await imageUploader(req);
+
+    // Check if imageURL is defined
+    if (!imageURL) {
+      return res.status(400).json({
+        success: false,
+        message: "Error uploading image",
+      });
+    }
+
+    const savedProduct = await Product.create({
+      ...req.body,
+      productImage: imageURL,
+    });
     res.status(201).json(savedProduct);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
 const updateProduct = async (req, res) => {
   try {
     const productId = parseInt(req.params.productId);

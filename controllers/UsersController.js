@@ -1,5 +1,6 @@
 const User = require("../models/Users");
 const bcrypt = require("bcrypt");
+const { generateToken } = require("../extra/generateToken");
 
 const getAllUsers = async (req, res) => {
   try {
@@ -87,12 +88,10 @@ const getAdmins = async (req, res) => {
 const addSeller = async (req, res) => {
   try {
     const role = "Seller";
-    const { userId, firstName, lastName, email, password, phoneNumber } =
-      req.body;
+    const { firstName, lastName, email, password, phoneNumber } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new User({
-      userId,
       firstName,
       lastName,
       email,
@@ -111,12 +110,10 @@ const addSeller = async (req, res) => {
 const addClient = async (req, res) => {
   try {
     const role = "client";
-    const { userId, firstName, lastName, email, password, phoneNumber } =
-      req.body;
+    const { firstName, lastName, email, password, phoneNumber } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new User({
-      userId,
       firstName,
       lastName,
       email,
@@ -135,12 +132,10 @@ const addClient = async (req, res) => {
 const addAdmin = async (req, res) => {
   try {
     const role = "admin";
-    const { userId, firstName, lastName, email, password, phoneNumber } =
-      req.body;
+    const { firstName, lastName, email, password, phoneNumber } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new User({
-      userId,
       firstName,
       lastName,
       email,
@@ -265,9 +260,11 @@ const loginUser = async (req, res) => {
       });
     }
 
+    const token = generateToken(user.userId, user.role);
     return res.status(200).json({
       success: true,
       message: `User with email ${email} logged in successfully.`,
+      token: token,
     });
   } catch (error) {
     return res.status(400).json({

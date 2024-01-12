@@ -4,7 +4,7 @@ const { Schema, model } = mongoose;
 const productsSchema = new mongoose.Schema({
   productId: {
     type: Number,
-    require: true,
+    required: false,
     unique: true,
   },
   categoryId: {
@@ -12,7 +12,7 @@ const productsSchema = new mongoose.Schema({
   },
   productName: {
     type: String,
-    require: true,
+    required: true,
   },
   productImage: {
     type: String,
@@ -38,6 +38,24 @@ const productsSchema = new mongoose.Schema({
       quantity: Number,
     },
   ],
+});
+
+productsSchema.pre("save", async function (next) {
+  try {
+    if (!this.productId || this.productId === null) {
+      const existingProducts = await this.constructor.find({
+        productId: { $exists: true },
+      });
+      const lastProductId =
+        existingProducts.length > 0
+          ? existingProducts[existingProducts.length - 1].productId
+          : 0;
+      this.productId = lastProductId + 1;
+    }
+    next();
+  } catch (error) {
+    next(error);
+  }
 });
 
 const Product = mongoose.model("Product", productsSchema);

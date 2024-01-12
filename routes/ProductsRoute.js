@@ -1,5 +1,7 @@
 const express = require("express");
 const router = express.Router();
+const multer = require("multer");
+const upload = multer({ storage: multer.memoryStorage() });
 
 const {
   getAllProducts,
@@ -18,7 +20,7 @@ router.get(
   getProductByDiscountedPourcentage
 );
 router.get("/getProductByPrice/:price", getProductByPrice);
-router.post("/add", addProduct);
+router.post("/addProduct", upload.single("image"), addProduct);
 router.put("/update/:productId", updateProduct);
 router.delete("/delete/:productId", deleteProduct);
 
