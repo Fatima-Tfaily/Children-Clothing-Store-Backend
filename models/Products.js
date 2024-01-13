@@ -26,12 +26,6 @@ const productsSchema = new mongoose.Schema({
     required: true,
     min: 0,
   },
-  discountedPourcentage: {
-    type: Number,
-  },
-  discountedPrice: {
-    type: Number,
-  },
   stocks: [
     {
       size: String,

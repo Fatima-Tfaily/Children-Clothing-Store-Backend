@@ -10,6 +10,7 @@ const categoriesSchema = new mongoose.Schema({
     type: String,
   },
   categoryImage: { type: String },
+  gender: { type: String },
 });
 
 categoriesSchema.pre("save", async function (next) {

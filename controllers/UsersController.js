@@ -51,23 +51,6 @@ const getAdminByID = async (req, res) => {
   }
 };
 
-const getSellers = async (req, res) => {
-  try {
-    const users = await User.find({ role: { $regex: /seller/i } });
-    if (!users || users.length === 0) {
-      return res.status(404).json({ msg: "User not found" });
-    }
-    res.json(users);
-  } catch (err) {
-    console.error(err.message);
-    if (err.kind === "ObjectId") {
-      return res.status(404).json({ msg: "User not found" });
-    }
-
-    res.status(500).send("Server Error");
-  }
-};
-
 const getAdmins = async (req, res) => {
   try {
     const users = await User.find({ role: "admin" });
@@ -80,42 +63,18 @@ const getAdmins = async (req, res) => {
     if (err.kind === "ObjectId") {
       return res.status(404).json({ msg: "User not found" });
     }
-
     res.status(500).send("Server Error");
   }
 };
 
-const addSeller = async (req, res) => {
-  try {
-    const role = "Seller";
-    const { firstName, lastName, email, password, phoneNumber } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const newUser = new User({
-      firstName,
-      lastName,
-      email,
-      hashedPassword,
-      phoneNumber,
-      role,
-    });
-    await newUser.save();
-    res.json(newUser);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server Error");
-  }
-};
-
-const addClient = async (req, res) => {
+const addUser = async (req, res) => {
   try {
     const role = "client";
-    const { firstName, lastName, email, password, phoneNumber } = req.body;
+    const { fullName, email, password, phoneNumber } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new User({
-      firstName,
-      lastName,
+      fullName,
       email,
       hashedPassword,
       phoneNumber,
@@ -132,12 +91,11 @@ const addClient = async (req, res) => {
 const addAdmin = async (req, res) => {
   try {
     const role = "admin";
-    const { firstName, lastName, email, password, phoneNumber } = req.body;
+    const { fullName, email, password, phoneNumber } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new User({
-      firstName,
-      lastName,
+      fullName,
       email,
       hashedPassword,
       phoneNumber,
@@ -151,39 +109,6 @@ const addAdmin = async (req, res) => {
   }
 };
 
-const switchToAdmin = async (req, res) => {
-  const userId = req.params.id;
-
-  try {
-    // Update the user's role to 'admin'
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      { $set: { role: "admin" } },
-      { new: true }
-    );
-
-    // Check if the user was found and updated
-    if (!updatedUser) {
-      return res
-        .status(404)
-        .json({ msg: `User with id = ${userId} not found.` });
-    }
-
-    return res.status(200).json({
-      success: true,
-      message: `User with id ${userId} switched to admin successfully.`,
-      data: updatedUser,
-    });
-  } catch (error) {
-    console.error(error.message);
-    return res.status(500).json({
-      success: false,
-      message: `Error while trying to update user with id ${userId}.`,
-      error: error.message,
-    });
-  }
-};
-
 const updateUser = async (req, res) => {
   try {
     const userId = req.params.id;
@@ -194,8 +119,7 @@ const updateUser = async (req, res) => {
       { _id: userId },
       {
         $set: {
-          firstName: req.body.firstName,
-          lastName: req.body.lastName,
+          fullName: req.body.fullName,
           email: req.body.email,
           hashedPassword: hashedPassword,
           phoneNumber: req.body.phoneNumber,
@@ -278,14 +202,11 @@ const loginUser = async (req, res) => {
 module.exports = {
   getAllUsers,
   getUserByID,
-  addClient,
+  addUser,
   addAdmin,
   deleteUser,
   updateUser,
   loginUser,
-  switchToAdmin,
-  getSellers,
-  addSeller,
   getAdmins,
   getAdminByID,
 };

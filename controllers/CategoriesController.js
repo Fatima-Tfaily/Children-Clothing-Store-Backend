@@ -25,6 +25,19 @@ const getCategoryByID = async (req, res) => {
   }
 };
 
+const getCategoryByGender = async (req, res) => {
+  try {
+    const gender = parseInt(req.params.gender);
+    const category = await Category.find({ gender: gender });
+    if (!category) {
+      return res.status(404).json({ message: "Category not found" });
+    }
+    res.json(category);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 // Update category
 const updateCategory = async (req, res) => {
   try {
@@ -61,9 +74,8 @@ const deleteCategory = async (req, res) => {
 
 const addCategory = async (req, res) => {
   try {
-    const { categoryName, categoryImage } = req.body;
+    const { categoryName, categoryImage, gender } = req.body;
 
-    // Check if the category with the given categoryName already exists
     const existingCategory = await Category.find({ categoryName });
     if (!existingCategory) {
       return res.status(400).json({ message: "Category Name already exists" });
@@ -72,6 +84,7 @@ const addCategory = async (req, res) => {
     const newCategory = new Category({
       categoryName,
       categoryImage,
+      gender,
     });
 
     const savedCategory = await newCategory.save();
@@ -84,6 +97,7 @@ const addCategory = async (req, res) => {
 module.exports = {
   getAllCategories,
   getCategoryByID,
+  getCategoryByGender,
   addCategory,
   deleteCategory,
   updateCategory,

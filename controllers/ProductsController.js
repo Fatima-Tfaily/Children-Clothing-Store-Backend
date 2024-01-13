@@ -29,19 +29,8 @@ const addProduct = async (req, res) => {
       });
     }
 
-    const imageURL = await imageUploader(req);
-
-    // Check if imageURL is defined
-    if (!imageURL) {
-      return res.status(400).json({
-        success: false,
-        message: "Error uploading image",
-      });
-    }
-
     const savedProduct = await Product.create({
       ...req.body,
-      productImage: imageURL,
     });
     res.status(201).json(savedProduct);
   } catch (error) {
@@ -91,18 +80,6 @@ const deleteProduct = async (req, res) => {
   }
 };
 
-const getProductByDiscountedPourcentage = async (req, res) => {
-  try {
-    const discountedPourcentage = parseFloat(req.params.discountedPourcentage);
-    const products = await Product.find({
-      discountedPourcentage: discountedPourcentage,
-    });
-    res.json(products);
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};
-
 const getProductByPrice = async (req, res) => {
   try {
     const price = parseFloat(req.params.price);
@@ -119,6 +96,5 @@ module.exports = {
   addProduct,
   updateProduct,
   deleteProduct,
-  getProductByDiscountedPourcentage,
   getProductByPrice,
 };
