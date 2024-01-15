@@ -11,7 +11,6 @@ const getAllCategories = async (req, res) => {
   }
 };
 
-// Get a Category by ID
 const getCategoryByID = async (req, res) => {
   try {
     const categoryId = parseInt(req.params.categoryId);
@@ -25,20 +24,6 @@ const getCategoryByID = async (req, res) => {
   }
 };
 
-const getCategoryByGender = async (req, res) => {
-  try {
-    const gender = parseInt(req.params.gender);
-    const category = await Category.find({ gender: gender });
-    if (!category) {
-      return res.status(404).json({ message: "Category not found" });
-    }
-    res.json(category);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
-
-// Update category
 const updateCategory = async (req, res) => {
   try {
     const categoryId = req.params.categoryId;
@@ -56,7 +41,6 @@ const updateCategory = async (req, res) => {
   }
 };
 
-// Delete a category
 const deleteCategory = async (req, res) => {
   try {
     const categoryId = req.params.categoryId;
@@ -74,30 +58,44 @@ const deleteCategory = async (req, res) => {
 
 const addCategory = async (req, res) => {
   try {
-    const { categoryName, categoryImage, gender } = req.body;
-
-    const existingCategory = await Category.find({ categoryName });
-    if (!existingCategory) {
-      return res.status(400).json({ message: "Category Name already exists" });
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "Image file is required",
+      });
     }
 
-    const newCategory = new Category({
-      categoryName,
-      categoryImage,
-      gender,
-    });
+    const imageURL = await imageUploader(req);
 
-    const savedCategory = await newCategory.save();
-    res.status(201).json(savedCategory);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+    if (!imageURL) {
+      return res.status(400).json({
+        success: false,
+        message: "Error uploading image",
+      });
+    }
+
+    const category = await Category.create({
+      ...req.body,
+      categoryImage: imageURL,
+    });
+    res.status(200).json({
+      success: true,
+      message: "Category added successfully",
+      data: category,
+    });
+  } catch (error) {
+    console.error("Error adding category:", error);
+    res.status(400).json({
+      success: false,
+      message: "Category not added successfully",
+      error: error.message,
+    });
   }
 };
 
 module.exports = {
   getAllCategories,
   getCategoryByID,
-  getCategoryByGender,
   addCategory,
   deleteCategory,
   updateCategory,

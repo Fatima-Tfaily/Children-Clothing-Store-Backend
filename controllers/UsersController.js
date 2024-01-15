@@ -69,9 +69,14 @@ const getAdmins = async (req, res) => {
 
 const addUser = async (req, res) => {
   try {
-    const role = "client";
+    const role = "user";
     const { fullName, email, password, phoneNumber } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "Email already exists" });
+    }
 
     const newUser = new User({
       fullName,
@@ -80,11 +85,11 @@ const addUser = async (req, res) => {
       phoneNumber,
       role,
     });
-    await newUser.save();
-    res.json(newUser);
+
+    const savedUser = await newUser.save();
+    res.status(201).json(savedUser);
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server Error");
+    res.status(500).json({ message: err.message });
   }
 };
 
@@ -184,11 +189,23 @@ const loginUser = async (req, res) => {
       });
     }
 
-    const token = generateToken(user.userId, user.role);
+    const token = generateToken({
+      _id: user._id,
+      userId: user.userId,
+      email: user.email,
+      role: user.role,
+    });
+
     return res.status(200).json({
       success: true,
       message: `User with email ${email} logged in successfully.`,
       token: token,
+      data: {
+        _id: user._id,
+        userId: user.userId,
+        email: user.email,
+        role: user.role,
+      },
     });
   } catch (error) {
     return res.status(400).json({

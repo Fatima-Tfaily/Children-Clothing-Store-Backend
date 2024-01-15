@@ -90,6 +90,19 @@ const getProductByPrice = async (req, res) => {
   }
 };
 
+const getProductByGender = async (req, res) => {
+  try {
+    const gender = req.params.gender;
+    const product = await Product.find({ gender: gender });
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+    res.json(product);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 module.exports = {
   getAllProducts,
   getProductByCategoryId,
@@ -97,4 +110,5 @@ module.exports = {
   updateProduct,
   deleteProduct,
   getProductByPrice,
+  getProductByGender,
 };
