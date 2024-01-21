@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const favoritesSchema = new mongoose.Schema({
   userId: {
-    type: Number,
+    type: String,
   },
   productId: {
     type: Number,

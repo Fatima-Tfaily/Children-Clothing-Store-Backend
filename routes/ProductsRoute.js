@@ -15,7 +15,7 @@ const {
 } = require("../controllers/ProductsController");
 
 router.get("/getAllProducts", getAllProducts);
-router.get("/getProductByGender", getProductByGender);
+router.get("/getProductByGender/:gender", getProductByGender);
 router.get("/getProductsByCategoryId/:categoryId", getProductByCategoryId);
 router.get("/getProductByPrice/:price", getProductByPrice);
 router.post("/addProduct", upload.single("image"), addProduct);
