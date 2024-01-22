@@ -191,7 +191,6 @@ const loginUser = async (req, res) => {
 
     const token = generateToken({
       _id: user._id,
-      userId: user.userId,
       email: user.email,
       role: user.role,
     });

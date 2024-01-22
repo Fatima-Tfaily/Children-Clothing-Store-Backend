@@ -31,21 +31,5 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-userSchema.pre("save", async function (next) {
-  try {
-    if (!this.userId) {
-      const existingUsers = await mongoose.model("Users").find();
-      const lastUserId =
-        existingUsers.length > 0
-          ? existingUsers[existingUsers.length - 1].userId
-          : 0;
-      this.userId = lastUserId + 1;
-    }
-    next();
-  } catch (error) {
-    next(error);
-  }
-});
-
 const Users = mongoose.model("Users", userSchema);
 module.exports = Users;

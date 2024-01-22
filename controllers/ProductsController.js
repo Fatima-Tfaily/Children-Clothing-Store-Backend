@@ -29,8 +29,18 @@ const addProduct = async (req, res) => {
       });
     }
 
+    const imageURL = await imageUploader(req);
+
+    if (!imageURL) {
+      return res.status(400).json({
+        success: false,
+        message: "Error uploading image",
+      });
+    }
+
     const savedProduct = await Product.create({
       ...req.body,
+      productImage: imageURL,
     });
     res.status(201).json(savedProduct);
   } catch (error) {
