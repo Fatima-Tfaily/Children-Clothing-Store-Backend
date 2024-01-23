@@ -2,7 +2,7 @@ const Orders = require("../models/Orders");
 
 const getAllOrders = async (req, res) => {
   try {
-    const orders = await Orders.find();
+    const orders = await Orders.find().populate("user products.product");
     res.json(orders);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });

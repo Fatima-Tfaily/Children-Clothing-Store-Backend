@@ -27,12 +27,7 @@ const productsSchema = new mongoose.Schema({
     min: 0,
   },
   gender: { type: String },
-  stocks: [
-    {
-      size: String,
-      quantity: Number,
-    },
-  ],
+  stocks: { type: Number },
 });
 
 productsSchema.pre("save", async function (next) {
