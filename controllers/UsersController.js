@@ -147,22 +147,36 @@ const updateUser = async (req, res) => {
 
 const deleteUser = async (req, res) => {
   const userId = req.params.id;
+
   try {
     const result = await User.findByIdAndDelete(userId);
+
     if (!result) {
       return res.status(404).json({
         success: false,
         message: "User not found",
       });
     }
-    res.json({
+
+    res.status(200).json({
       success: true,
       message: "User deleted successfully",
     });
   } catch (error) {
+    console.error("Error deleting user:", error);
+
+    // Check for specific error types (e.g., CastError) and handle accordingly
+    if (error.name === "CastError" && error.kind === "ObjectId") {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid user ID format",
+        error: error.message,
+      });
+    }
+
     res.status(500).json({
       success: false,
-      message: "Unable to delete User",
+      message: "Unable to delete user",
       error: error.message,
     });
   }

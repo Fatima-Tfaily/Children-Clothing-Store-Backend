@@ -30,6 +30,6 @@ router.put(
   isAuthenticated(["organizer", "admin"]),
   updateUser
 );
-router.delete("/deleteUser/:id", isAuthenticated(["admin"]), deleteUser);
+router.delete("/deleteUser/:id", deleteUser);
 
 module.exports = router;
