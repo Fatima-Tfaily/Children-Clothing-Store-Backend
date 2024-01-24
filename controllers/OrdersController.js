@@ -2,7 +2,7 @@ const Orders = require("../models/Orders");
 
 const getAllOrders = async (req, res) => {
   try {
-    const orders = await Orders.find().populate("user products.product");
+    const orders = await Orders.find();
     res.json(orders);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
@@ -34,20 +34,20 @@ const getOrderById = async (req, res) => {
 
 const addOrder = async (req, res) => {
   try {
-    const { userId, products, address, totalPrice, status } = req.body;
+    const { user, products, address, totalPrice } = req.body;
 
     const order = new Orders({
-      userId,
+      user,
       products,
       address,
       totalPrice,
-      status,
     });
 
     const savedOrder = await order.save();
 
     res.status(201).json(savedOrder);
   } catch (error) {
+    console.error("Error adding order:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };

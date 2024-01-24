@@ -10,14 +10,14 @@ const {
   updateProduct,
   deleteProduct,
   getProductByDiscountedPourcentage,
-  getProductByPrice,
+  getProductById,
   getProductByGender,
 } = require("../controllers/ProductsController");
 
 router.get("/getAllProducts", getAllProducts);
 router.get("/getProductByGender/:gender", getProductByGender);
 router.get("/getProductsByCategoryId/:categoryId", getProductByCategoryId);
-router.get("/getProductByPrice/:price", getProductByPrice);
+router.get("/getProductById/:id", getProductById);
 router.post("/addProduct", upload.single("image"), addProduct);
 router.put("/update/:productId", updateProduct);
 router.delete("/delete/:productId", deleteProduct);
