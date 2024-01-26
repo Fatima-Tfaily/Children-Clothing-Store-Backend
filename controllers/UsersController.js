@@ -51,6 +51,22 @@ const getAdminByID = async (req, res) => {
   }
 };
 
+const getUsers = async (req, res) => {
+  try {
+    const users = await User.find({ role: "user" });
+    if (!users || users.length === 0) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+    res.json(users);
+  } catch (err) {
+    console.error(err.message);
+    if (err.kind === "ObjectId") {
+      return res.status(404).json({ msg: "User not found" });
+    }
+    res.status(500).send("Server Error");
+  }
+};
+
 const getAdmins = async (req, res) => {
   try {
     const users = await User.find({ role: "admin" });
@@ -227,6 +243,7 @@ const loginUser = async (req, res) => {
 module.exports = {
   getAllUsers,
   getUserByID,
+  getUsers,
   addUser,
   addAdmin,
   deleteUser,

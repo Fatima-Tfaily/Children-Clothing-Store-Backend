@@ -34,12 +34,11 @@ const getOrderById = async (req, res) => {
 
 const addOrder = async (req, res) => {
   try {
-    const { user, products, address, totalPrice } = req.body;
+    const { user, products, totalPrice } = req.body;
 
     const order = new Orders({
       user,
       products,
-      address,
       totalPrice,
     });
 
@@ -48,7 +47,7 @@ const addOrder = async (req, res) => {
     res.status(201).json(savedOrder);
   } catch (error) {
     console.error("Error adding order:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: error.message || "Internal Server Error" });
   }
 };
 

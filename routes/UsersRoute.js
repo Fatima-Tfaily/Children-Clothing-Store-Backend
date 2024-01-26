@@ -13,6 +13,7 @@ const {
   getSellers,
   addSeller,
   getAdmins,
+  getUsers,
   getAdminByID,
 } = require("../controllers/UsersController");
 
@@ -21,6 +22,7 @@ const isAuthenticated = require("../middlewares/isAuth");
 router.get("/", getAllUsers);
 router.get("/getByID/:id", getUserByID);
 router.get("/getAdmin", getAdmins);
+router.get("/getUsers", getUsers);
 router.get("/getAdminById/:id", getAdminByID);
 router.post("/addUser", addUser);
 router.post("/addAdmin", addAdmin);

@@ -19,7 +19,7 @@ router.get("/getProductByGender/:gender", getProductByGender);
 router.get("/getProductsByCategoryId/:categoryId", getProductByCategoryId);
 router.get("/getProductById/:id", getProductById);
 router.post("/addProduct", upload.single("image"), addProduct);
-router.put("/update/:productId", updateProduct);
+router.put("/update/:id", updateProduct);
 router.delete("/delete/:productId", deleteProduct);
 
 module.exports = router;

@@ -25,7 +25,7 @@ const ordersSchema = new mongoose.Schema({
   ],
   address: {
     type: String,
-    required: true,
+    required: false,
   },
   totalPrice: {
     type: Number,

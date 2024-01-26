@@ -99,10 +99,31 @@ const deleteCartsByUserId = async (req, res) => {
   }
 };
 
+const updateCartQuantity = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { productId, quantity } = req.body;
+
+    // TODO: Make the necessary update in your cart model or database
+
+    res.status(200).json({
+      success: true,
+      message: "Cart quantity updated successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error updating cart quantity",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   getAllCarts,
   getCartsByUserId,
   deleteCartById,
   deleteCartsByUserId,
   addCart,
+  updateCartQuantity,
 };

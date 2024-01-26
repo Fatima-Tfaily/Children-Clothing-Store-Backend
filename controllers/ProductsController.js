@@ -50,9 +50,8 @@ const addProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
   try {
-    const productId = parseInt(req.params.productId);
-    const updatedProduct = await Product.findOneAndUpdate(
-      { productId: productId },
+    const updatedProduct = await Product.findByIdAndUpdate(
+      req.params.id,
       { $set: req.body },
       { new: true }
     );
@@ -61,10 +60,7 @@ const updateProduct = async (req, res) => {
       return res.status(404).json({ message: "Product not found" });
     }
 
-    res.json({
-      message: "Product updated successfully",
-      updatedProduct,
-    });
+    res.json(updatedProduct);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
@@ -92,7 +88,7 @@ const deleteProduct = async (req, res) => {
 
 const getProductById = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
+    const product = await Product.find({ productId: req.params.id });
 
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
@@ -100,6 +96,7 @@ const getProductById = async (req, res) => {
 
     res.json(product);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
